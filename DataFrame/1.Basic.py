@@ -1,18 +1,21 @@
 from pyspark.sql import SparkSession
+spark = SparkSession.builder.appName('Basic_Dataframe').getOrCreate()
+
+# Set log level to ERROR
+spark.sparkContext.setLogLevel("ERROR")
 
 # Define data as a list of dictionaries
 data = [
     {'Name': 'Arya', 'Age': 25, 'City': 'Mumbai'},
-    {'Name': 'Delhi', 'Age': 30, 'City': 'Bhopal'},
-    {'Name': 'Charlie', 'Age': 35, 'City': 'Chicago'},
-    {'Name': 'Binita', 'Age': 25, 'City': 'Kolkata'},
-    {'Name': 'Ramesh', 'Age': 30, 'City': 'Patna'},
+    {'Name': 'Danny', 'Age': 30, 'City': 'Bhopal'},
+    {'Name': 'Charlie', 'Age': 28, 'City': 'Chicago'},
+    {'Name': 'Binita', 'Age': 23, 'City': 'Kolkata'},
+    {'Name': 'Ramesh', 'Age': 27, 'City': 'Patna'},
     {'Name': 'Anjali', 'Age': 25, 'City': 'Hyderabad'},
     {'Name': 'Vishal', 'Age': 30, 'City': 'Ranchi'},
-    {'Name': 'Rahul', 'Age': 25, 'City': 'Chennai'},
-    {'Name': 'Vikash', 'Age': 30, 'City': 'Delhi'}
+    {'Name': 'Rahul', 'Age': 33, 'City': 'Chennai'},
+    {'Name': 'Vikash', 'Age': 28, 'City': 'Delhi'}
 ]
-spark = SparkSession.builder.appName('Basic_Dataframe').getOrCreate()
 df = spark.createDataFrame(data)
 df.show()
 
