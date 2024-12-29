@@ -1,9 +1,6 @@
 from pyspark.sql import SparkSession
 spark = SparkSession.builder.appName('Basic_Dataframe').getOrCreate()
 
-# Set log level to ERROR
-spark.sparkContext.setLogLevel("ERROR")
-
 # Define data as a list of dictionaries
 data = [
     {'Name': 'Arya', 'Age': 25, 'City': 'Mumbai'},
