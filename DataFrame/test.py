@@ -17,7 +17,7 @@ spark = SparkSession.builder \
     .config("spark.cleaner.referenceTracking", "false") \
     .config("spark.cleaner.referenceTracking.blocking", "true") \
     .config("spark.cleaner.referenceTracking.cleanCheckpoints", "false") \
-    .config("spark.local.dir.cleanup.on.exit", "false") \
+    .config("spark.local.dir.cleanupOnExit", "false") \
     .getOrCreate()
 
 print("Spark Session Created Successfully")
