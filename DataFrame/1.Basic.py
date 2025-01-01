@@ -1,5 +1,19 @@
 from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName('Basic_Dataframe').getOrCreate()
+
+# Define the custom temporary directory path
+custom_tmp_dir = "C:\\spark\\temp"
+
+# Build the Spark session with the custom java.io.tmpdir setting
+spark = SparkSession.builder \
+    .appName("Basic_Dataframe") \
+    .config("spark.executor.extraJavaOptions", f"-Djava.io.tmpdir={custom_tmp_dir}") \
+    .config("spark.driver.extraJavaOptions", f"-Djava.io.tmpdir={custom_tmp_dir}") \
+    .config("spark.local.dir", "C:\\spark\\temp") \
+    .config("spark.cleaner.referenceTracking", "false") \
+    .getOrCreate()
+
+# # Set log level to INFO
+# spark.sparkContext.setLogLevel("INFO")
 
 # Define data as a list of dictionaries
 data = [
