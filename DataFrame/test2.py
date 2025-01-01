@@ -19,19 +19,27 @@ def safe_cleanup(dir_path):
                     elif os.path.isdir(item_path):
                         shutil.rmtree(item_path)  # Remove directory
                 print(f"Contents of {dir_path} deleted successfully.")
+                
             except Exception as e:
                 print(f"Error deleting contents of {dir_path}: {e}")
 
 def custom_shutdown_hook(temp_dir):
     """Custom shutdown hook to delete the Spark temp directory."""
     print(f"Running custom shutdown hook for {temp_dir}")
-    safe_cleanup(temp_dir)
+    # with cleanup_lock:  # Ensure thread safety
+    if os.path.exists(temp_dir) and os.path.isdir(temp_dir):
+        safe_cleanup(temp_dir)
+        print("cleaned")
+    else:
+        print(f"{temp_dir} already cleaned up.")
+
 
 # Main Spark Application
 spark = SparkSession.builder \
     .appName("ThreadLockExample") \
     .config("spark.local.dir", "C:\\spark\\temp\\") \
     .config("spark.local.dir.cleanupOnExit", "false") \
+    .config("spark.cleaner.referenceTracking.cleanCheckpoints", "false") \
     .getOrCreate()
 
 print("Spark Session Created")
@@ -49,9 +57,10 @@ spark.stop()
 
 print("\nspark is being stopped\n")
 
+time.sleep(120)
+
 # Register a shutdown hook with the lock
 import atexit
 atexit.register(custom_shutdown_hook, temp_dir) 
 
-# Final manual cleanup (if necessary)
-safe_cleanup(temp_dir)
+
