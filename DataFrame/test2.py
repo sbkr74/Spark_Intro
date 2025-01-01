@@ -1,57 +1,55 @@
-import time
 import os
+import threading
+import shutil
 from pyspark.sql import SparkSession
+import time
+# Global thread lock
+cleanup_lock = threading.Lock()
 
-# Custom function to safely delete Spark temp directory
-def safely_delete_temp_directory(temp_dir):
-    print(f"Custom Temp Directory Exists After Stop: {temp_dir}")
-    if os.path.exists(temp_dir):
-        print(f"Sleeping to let auto-cleanup complete...")
-        time.sleep(5)  # Delay to allow auto-cleanup to finish
-        if os.path.exists(temp_dir):  # Check again after the delay
-            print(f"Manually deleting temp directory: {temp_dir}")
-            os.rmdir(temp_dir)  # Deletes the directory only if empty
-        else:
-            print(f"Temp directory already cleaned up: {temp_dir}")
-    else:
-        print(f"No temp directory found for cleanup.")
+def safe_cleanup(dir_path):
+    """Thread-safe cleanup function."""
+    # with cleanup_lock:  # Acquire the lock
+    if os.path.exists(dir_path) and os.path.isdir(dir_path):
+        try:
+            # Iterate through the contents of the directory
+            for item in os.listdir(dir_path):
+                item_path = os.path.join(dir_path, item)
+                if os.path.isfile(item_path) or os.path.islink(item_path):
+                    os.unlink(item_path)  # Remove file or symlink
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)  # Remove directory
+            print(f"Contents of {dir_path} deleted successfully.")
+        except Exception as e:
+            print(f"Error deleting contents of {dir_path}: {e}")
 
-# Create SparkSession with custom temp directory
-temp_dir = "C:\\spark\\temp"
-os.makedirs(temp_dir, exist_ok=True)  # Ensure the temp directory exists
+def custom_shutdown_hook(temp_dir):
+    """Custom shutdown hook to delete the Spark temp directory."""
+    print(f"Running custom shutdown hook for {temp_dir}")
+    safe_cleanup(temp_dir)
 
-print(f"Custom Temp Directory Created/Exists: {temp_dir}")
-
+# Main Spark Application
 spark = SparkSession.builder \
-    .appName("TempDirectoryRaceConditionExample") \
-    .config("spark.local.dir", temp_dir) \
-    .master("local[*]") \
+    .appName("ThreadLockExample") \
+    .config("spark.local.dir", "C:\\spark\\temp\\") \
+    .config("spark.local.dir.cleanupOnExit", "false") \
     .getOrCreate()
 
-print("Spark Session Created Successfully")
+print("Spark Session Created")
+temp_dir = spark.conf.get("spark.local.dir")
 
-# Example DataFrame
-data = [
-    (25, "Mumbai", "Arya"),
-    (30, "Bhopal", "Danny"),
-    (28, "Chicago", "Charlie"),
-    (23, "Kolkata", "Binita"),
-    (27, "Patna", "Ramesh"),
-    (25, "Hyderabad", "Anjali"),
-    (30, "Ranchi", "Vishal"),
-    (33, "Chennai", "Rahul"),
-    (28, "Delhi", "Vikash")
-]
-columns = ["Age", "City", "Name"]
-
-df = spark.createDataFrame(data, columns)
+# Example operation
+data = [(25, "Mumbai", "Arya"), (30, "Bhopal", "Danny")]
+df = spark.createDataFrame(data, ["Age", "City", "Name"])
 df.show()
 
-print("Spark Configured Local Temp Directory:", temp_dir)
+# Register a shutdown hook with the lock
+import atexit
+atexit.register(custom_shutdown_hook, temp_dir)
 
-# Stop SparkSession
+# Stop Spark Session
 spark.stop()
-print("Spark Session Stopped")
 
-# Safely delete temp directory after Spark shutdown
-safely_delete_temp_directory(temp_dir)
+print("\nspark is being stopped\n")
+
+# Final manual cleanup (if necessary)
+safe_cleanup(temp_dir)
