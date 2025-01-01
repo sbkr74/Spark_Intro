@@ -8,19 +8,19 @@ cleanup_lock = threading.Lock()
 
 def safe_cleanup(dir_path):
     """Thread-safe cleanup function."""
-    # with cleanup_lock:  # Acquire the lock
-    if os.path.exists(dir_path) and os.path.isdir(dir_path):
-        try:
-            # Iterate through the contents of the directory
-            for item in os.listdir(dir_path):
-                item_path = os.path.join(dir_path, item)
-                if os.path.isfile(item_path) or os.path.islink(item_path):
-                    os.unlink(item_path)  # Remove file or symlink
-                elif os.path.isdir(item_path):
-                    shutil.rmtree(item_path)  # Remove directory
-            print(f"Contents of {dir_path} deleted successfully.")
-        except Exception as e:
-            print(f"Error deleting contents of {dir_path}: {e}")
+    with cleanup_lock:  # Acquire the lock
+        if os.path.exists(dir_path) and os.path.isdir(dir_path):
+            try:
+                # Iterate through the contents of the directory
+                for item in os.listdir(dir_path):
+                    item_path = os.path.join(dir_path, item)
+                    if os.path.isfile(item_path) or os.path.islink(item_path):
+                        os.unlink(item_path)  # Remove file or symlink
+                    elif os.path.isdir(item_path):
+                        shutil.rmtree(item_path)  # Remove directory
+                print(f"Contents of {dir_path} deleted successfully.")
+            except Exception as e:
+                print(f"Error deleting contents of {dir_path}: {e}")
 
 def custom_shutdown_hook(temp_dir):
     """Custom shutdown hook to delete the Spark temp directory."""
@@ -42,14 +42,16 @@ data = [(25, "Mumbai", "Arya"), (30, "Bhopal", "Danny")]
 df = spark.createDataFrame(data, ["Age", "City", "Name"])
 df.show()
 
-# Register a shutdown hook with the lock
-import atexit
-atexit.register(custom_shutdown_hook, temp_dir)
+
 
 # Stop Spark Session
 spark.stop()
 
 print("\nspark is being stopped\n")
+
+# Register a shutdown hook with the lock
+import atexit
+atexit.register(custom_shutdown_hook, temp_dir) 
 
 # Final manual cleanup (if necessary)
 safe_cleanup(temp_dir)
