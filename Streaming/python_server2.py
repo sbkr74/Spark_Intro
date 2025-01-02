@@ -15,7 +15,7 @@ print(f"Connection established with {addr}")
 messages = [
     "hello Spark",
     "Structured Streaming example",
-    "this is a test",
+    "this is a test Spark code",
     "data flows every 10 seconds"
 ]
 
