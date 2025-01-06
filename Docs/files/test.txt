@@ -1,0 +1,3 @@
+This is file from testing RDD and other uses cases.
+For now I am using it from RDD.
+for future UseCases we will update this text file also.
