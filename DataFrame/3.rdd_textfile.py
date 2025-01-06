@@ -4,4 +4,8 @@ sc = SparkContext(conf=conf)
 file_path = r'Docs\files\test.txt'
 rdd = sc.textFile(file_path)
 result = rdd.collect()
-print(result)
+for ele in result:
+    print(ele)
+
+######################
+# upcoming word count using rdd...
