@@ -7,3 +7,15 @@ rdd = sc.parallelize(num_list)
 print(type(rdd))
 result = rdd.collect()
 print(result)
+
+####################################
+# example: 2
+str_list = ["my","home","is","far","from","noises."]
+rdd2 = sc.parallelize(str_list)
+print(rdd2.collect())
+
+# use of take(n)
+print(rdd.take(3))
+
+#using foreach method
+rdd2.foreach(lambda x:print(x))
