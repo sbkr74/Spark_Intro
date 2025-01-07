@@ -8,4 +8,7 @@ for ele in result:
     print(ele)
 
 ######################
-# upcoming word count using rdd...
+rdd2 = rdd.flatMap(lambda x : x.split(" "))
+rdd3 = rdd2.map(lambda x : (x,1))
+rdd4 = rdd3.reduceByKey(lambda x,y : x+y)
+print(rdd4.collect())
