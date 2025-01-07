@@ -3,6 +3,10 @@ Resilient Distributed Datasets (RDD) are a fundamental data structure in Apache 
 
 At a high level, every Spark application consists of a driver program that runs the user’s main function and executes various parallel operations on a cluster. The main abstraction Spark provides is a resilient distributed dataset (RDD), which is a collection of elements partitioned across the nodes of the cluster that can be operated on in parallel.
 
+There are two ways to create RDDs: parallelizing an existing collection in your driver program, or referencing a dataset in an external storage system, such as a shared filesystem, HDFS, HBase, or any data source offering a Hadoop InputFormat.
+
+
+
 ### Summary
 - RDD stands for Resilient Distributed Dataset.
     - Resilient:- Relates to fault-tolerant i.e., ability to recover from failure.
@@ -23,6 +27,8 @@ At a high level, every Spark application consists of a driver program that runs 
 - keys()
 - values()
 - map(func)
+- mapPartitions(func)
+- mapPartitionsWithIndex(func)
 - filter(func)
 - flatmap(func)
 - reduceByKey(func)
@@ -44,8 +50,21 @@ At a high level, every Spark application consists of a driver program that runs 
 - zip(otherRDD)
 - sample(withReplacement,fraction,seed) -> rdd.sample(false,0.1)
 - sortBy(func,ascending=True)
+- aggregateByKey(zeroValue)(seqOp, combOp, [numPartitions])
+- repartitionAndSortWithinPartitions(partitioner)
 - pipe(command)  -> external shell command -> rdd.pipe("grep 'error'")
 
 
 ### Actions Operations
 - collect()
+- reduce(func)
+- count()
+- countByKey()
+- first()
+- foreach(func)
+- take(n)
+- takeSample(withReplacement, num, [seed])
+- takeOrdered(n, [ordering])
+- saveAsTextFile(path)
+- saveAsSequenceFile(path) `(Java and Scala)`
+- saveAsObjectFile(path) `(Java and Scala)`
