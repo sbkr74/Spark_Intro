@@ -12,11 +12,40 @@ At a high level, every Spark application consists of a driver program that runs 
 - Using SparkContext we can create RDD.
 - RDD is immutable.
 - RDD is partitioned across worker nodes.
+### There are broadly 2 types of operations.
+- Transformations
+- Actions
 
-### Operations with RDD
-- parallelize()
+
+# Operations with RDD
+### Transformations Operations
+- distinct()
+- keys()
+- values()
+- map(func)
+- filter(func)
+- flatmap(func)
+- reduceByKey(func)
+- groupBykey()
+- mapValues(func)
+- flatMapValues(func)
+- join(otherRDD)
+- leftOuterJoin(otherRDD)
+- rightOuterJoin(otherRDD)
+- union(otherRDD)
+- intersection(otherRDD)
+- substract(otherRDD)
+- cartesian(otherRDD)
+
+### Advance Transformations
+- cogroup(otherRDD)
+- coalesce(numPartitions)
+- repartition(numPartitions)
+- zip(otherRDD)
+- sample(withReplacement,fraction,seed) -> rdd.sample(false,0.1)
+- sortBy(func,ascending=True)
+- pipe(command)  -> external shell command -> rdd.pipe("grep 'error'")
+
+
+### Actions Operations
 - collect()
-- map()
-- flatmap()
-- reduce()
-    - reduceByKey()
