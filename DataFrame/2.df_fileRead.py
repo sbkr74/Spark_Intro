@@ -17,6 +17,9 @@ from pyspark.sql.functions import expr
 df1 = df.select("customer id","subscription date","website",expr("date_add(`Subscription Date`,3) as `ext subs`"))
 df1.show(n=5)
 
+# for multiple expr()
+df1 = df.select("customer id","subscription date","website",expr("date_add(`Subscription Date`,3) as `ext subs`"),expr("concat('Id-',`customer id`) as newID"))
+df1.show(n=5)
 # col() --> 
 from pyspark.sql.functions import col
 df2 = df.select(col("Customer ID"),col("Subscription Date"),col("Website"))
@@ -26,5 +29,9 @@ df2.show(n=5)
 df3 = df.selectExpr("`Customer Id`","`Subscription Date`","Website")
 df3.show(n=5)
 
-df4 = df.selectExpr("`customer id`","`Subscription Date`","website","date_add(`Subscription Date`,3) as `ext subs`")
-df4.show(n=5)
+df3 = df.selectExpr("`customer id`","`Subscription Date`","website","date_add(`Subscription Date`,3) as `ext subs`")
+df3.show(n=5)
+
+# multiple expressions 
+df3 = df.selectExpr("`customer id`","`Subscription Date`","website","date_add(`Subscription Date`,3) as `ext subs`","concat('Id-',`customer id`) as newID")
+df3.show(n=5)
