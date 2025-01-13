@@ -24,3 +24,5 @@ df3.printSchema()
 # modify existing column
 df4 = df3.withColumn('subscription date',col('subscription date').cast("date"))
 df4.printSchema()
+
+# adding Column based on condition
