@@ -26,3 +26,15 @@ df4 = df3.withColumn('subscription date',col('subscription date').cast("date"))
 df4.printSchema()
 
 # adding Column based on condition
+from pyspark.sql.functions import when
+data_df = spark.read.format("csv") \
+    .option("path",r"Docs\files\014-Data.csv") \
+    .option("header","True") \
+    .load()
+
+data_df=data_df.withColumn("category",when(col("Color")=="Red",1).otherwise(col("Color")))
+data_df.show(n=20)
+
+# for multiple conditions
+data_df_mult = data_df.withColumn("category",when(col("Color")=="Red",1).when(col("Color")=="Silver",2).when(col("Color")=="Black",3).otherwise(col("Color")))
+data_df_mult.show(10)
