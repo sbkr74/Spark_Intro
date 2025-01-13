@@ -38,3 +38,11 @@ data_df.show(n=20)
 # for multiple conditions
 data_df_mult = data_df.withColumn("category",when(col("Color")=="Red",1).when(col("Color")=="Silver",2).when(col("Color")=="Black",3).otherwise(col("Color")))
 data_df_mult.show(10)
+
+# drop columns 
+drop_df = data_df_mult.drop("Country")
+drop_df.show(n=20)
+
+# multiple drop
+mult_drop_df = data_df_mult.drop("ProductName","ListPrice","category")
+mult_drop_df.show(n=25)
