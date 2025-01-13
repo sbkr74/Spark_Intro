@@ -46,3 +46,22 @@ drop_df.show(n=20)
 # multiple drop
 mult_drop_df = data_df_mult.drop("ProductName","ListPrice","category")
 mult_drop_df.show(n=25)
+
+# Renaming Column
+ren_df = data_df.withColumnRenamed("SalesAmount","Sales")
+ren_df.printSchema()
+
+# Renaming Multiple Column
+mul_ren_df = data_df.withColumnRenamed("ProductKey","ProductId").withColumnRenamed("TaxAmt","Tax")
+mul_ren_df.printSchema()
+
+# Renaming using select Expr (but all needed column to be passed to display)
+ren_df_sel = data_df.selectExpr("ProductKey as ProductID","SalesAmount","CustomerName as Name","Country")
+ren_df_sel.show(n=5)
+
+print(data_df.columns)
+print("\n------------------------------------------------------------------------------\n")
+new_col = list(map(lambda x: x.upper(),data_df.columns))
+print(new_col)
+ren_df_upper = data_df.toDF(*new_col)
+ren_df_upper.show(n=3)
