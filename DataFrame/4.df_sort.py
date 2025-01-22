@@ -9,4 +9,10 @@ df = spark.read \
         .option("inferSchema","True") \
         .csv(r"Docs\files\data.csv")
 
-df.show(n=10)
+# Single column sorting
+sorted_df = df.sort("CustomerName")
+sorted_df.show()
+
+# multiple column sorting
+mult_sorted_df = df.sort("ProductKey","CustomerName")
+mult_sorted_df.show()
