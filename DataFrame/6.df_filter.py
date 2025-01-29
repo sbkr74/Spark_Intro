@@ -34,3 +34,28 @@ filter_df.show()
 # Using col for different operations
 filter_df = df.filter(col("Age").between(30,50))
 filter_df.show()
+
+##############################################################################
+# Basic Filter Operation Using Where
+df_filter = df.where("Address IS NOT NULL")
+df_filter.show()
+
+# PATTERN BASED FILTER
+df_filter = df.where(col("Name").startswith("J"))
+df_filter.show()
+
+df_filter = df.where(col("Name").endswith("n"))
+df_filter.show()
+
+df_filter = df.where(col("Name").contains("o"))
+df_filter.show()
+
+df_filter = df.where(col("Name").like("J%"))
+df_filter.show()
+
+
+df_filter = df.where(col("Name").like("%n"))
+df_filter.show()
+
+df_filter = df.where(col("Name").like("%o%"))
+df_filter.show()
