@@ -19,12 +19,17 @@ filter_df = df.filter(col("Phone") != 'NULL')
 filter_df.show()
 
 # for mutiple comdition
-filter_df = df.filter("Age == 50" or "Age == 30")
+filter_df = df.filter("Age = 50 or Age = 30")
 filter_df.show()
 
-filter_df = df.filter("Age == 50" and "Name == 'NULL'")
+filter_df = df.filter((col("Age") == 50) | (col("Age") == 30))
 filter_df.show()
 
+filter_df = df.filter("Age = 50 AND Name IS NULL")
+filter_df.show()
+
+filter_df = df.filter((col("Age") == 50) & (col("Name").isNull()))
+filter_df.show()
 
 # Using col for different operations
 filter_df = df.filter(col("Age").between(30,50))
