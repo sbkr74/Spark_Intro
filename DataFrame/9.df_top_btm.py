@@ -1,26 +1,26 @@
 from pyspark.sql import SparkSession
 from pyspark import SparkContext as sc
 
+# Creating SparkSession
 spark = SparkSession.builder.appName("text conversion").getOrCreate()
 
-sc = sc = spark.sparkContext 
+# Getting SparkContext from SparkSession
+sc = spark.sparkContext 
+
 # Relative File path for CSV file.
 file_Path = r"Docs\files\customers-100.csv"
-
 cust_df = spark.read.option("header","True").option("inferSchema","True").csv(file_Path)
 
-# top record
+# Top record or First Record
 print("\nOnly showing first record from top\n")
-first_rec = cust_df.first()
-rdd = sc.parallelize([first_rec])
-df_first = rdd.toDF()
+first_rec = [cust_df.first()]
+df_first = spark.createDataFrame(first_rec)
 df_first.show()
 
 # Top 5 records using head()
 print("\nShowing Top 5 records from top Using head()\n")
 head_rec = cust_df.head(5)
-rdd = sc.parallelize(head_rec)
-df_head = rdd.toDF()
+df_head = spark.createDataFrame(head_rec,schema=cust_df.schema)
 df_head.show() 
 
 # Top 5 records using take()
