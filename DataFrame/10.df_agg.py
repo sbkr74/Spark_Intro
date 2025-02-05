@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import sum,avg,min,max,count,countDistinct
+from pyspark.sql.functions import sum,avg,min,max,count,countDistinct,round
 
 # Creating SparkSession
 spark = SparkSession.builder \
@@ -57,3 +57,11 @@ df_count_dist.show()
 # Use of countDistinct() with alias
 df_count_dist = df.select(countDistinct("Country").alias("UniqueCont"))
 df_count_dist.show()
+
+# Multiple agg. functions 
+df_mult= df.select(min("SalesAmount").alias("MinSales"),max("SalesAmount").alias("MaxSales"))
+df_mult.show()
+
+# Perform above using sql statement in selectExpr()
+df_exp = df.selectExpr("sum(SalesAmount) as TotalSales", "max(SalesAmount) as Max", "min(SalesAmount) as Min")
+df_exp.show()
