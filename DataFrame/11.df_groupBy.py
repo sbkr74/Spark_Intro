@@ -26,3 +26,11 @@ df_grp.show()
 # multiple groupBy columns
 df_grp = df.groupBy("Country","ProductName").sum("SalesAmount")
 df_grp.show()
+
+# use of agg()
+df_grp = df.groupBy("Country").agg(sum("SalesAmount").alias("TotalAmt"))
+df_grp.show()
+
+# mutiple operations
+df_grp = df.groupBy("Country","ProductName").agg(sum("SalesAmount").alias("TotalAmt"),round(avg("TaxAmt"),2).alias("AvgTax"))
+df_grp.show()
